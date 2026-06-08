@@ -6,7 +6,7 @@ export function useFiles(category) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const fetchFiles = useCallback(async () => {
+  const fetchFiles = useCallback(async (retry = false) => {
     try {
       setLoading(true)
       setError(null)
@@ -19,7 +19,11 @@ export function useFiles(category) {
       if (fetchError) throw fetchError
       setFiles(data || [])
     } catch (err) {
-      setError(err.message)
+      if (!retry) {
+        setTimeout(() => fetchFiles(true), 1000)
+      } else {
+        setError(err.message)
+      }
     } finally {
       setLoading(false)
     }
@@ -91,6 +95,8 @@ export function useFiles(category) {
     })
 
     if (dbError) throw dbError
+
+    await fetchFiles()
 
     return { wasDuplicate: existingNames.includes(file.name), finalName }
   }
