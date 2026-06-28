@@ -8,58 +8,28 @@ const SLUGS = ['backorder', 'overdue', 'fillrate', 'inventory']
 
 export default function Home() {
   const [fileCounts, setFileCounts] = useState({})
-  const [connectionError, setConnectionError] = useState(false)
 
   useEffect(() => {
-    async function fetchCounts() {
-      try {
-        const { data, error } = await supabase
-          .from('files')
-          .select('category')
-        if (error) throw error
-        const counts = {}
-        SLUGS.forEach(s => { counts[s] = 0 })
-        data?.forEach(row => {
-          if (counts[row.category] !== undefined) counts[row.category]++
-        })
-        setFileCounts(counts)
-      } catch {
-        setConnectionError(true)
-      }
-    }
-    fetchCounts()
+    supabase.from('files').select('category').then(({ data }) => {
+      if (!data) return
+      const counts = {}
+      SLUGS.forEach(s => { counts[s] = 0 })
+      data.forEach(row => {
+        if (counts[row.category] !== undefined) counts[row.category]++
+      })
+      setFileCounts(counts)
+    })
   }, [])
 
-  const wordReveal = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.08 } },
-  }
-  const wordItem = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  }
-
-  const titleWords = ['FORD', 'THAILAND', 'METRICS']
-
   return (
-    <div className="min-h-screen" style={{ background: '#000d1a' }}>
-      {connectionError && (
-        <div className="w-full py-2 px-4 text-center text-sm font-body text-yellow-300" style={{ background: 'rgba(255,200,50,0.12)', border: '1px solid rgba(255,200,50,0.2)' }}>
-          ⚠ Connection issue — please refresh the page
-        </div>
-      )}
-
-      {/* Hero Section */}
+    <div className="min-h-screen" style={{ background: '#081420' }}>
       <section className="relative flex flex-col items-center justify-center min-h-screen pt-8 pb-12 px-4 overflow-hidden">
 
-        {/* Mustang background image — z-index 0 */}
-        <motion.img
+        {/* Mustang background image */}
+        <img
           src="/mustang.avif"
           alt=""
           aria-hidden="true"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, ease: 'easeOut' }}
           style={{
             position: 'absolute',
             top: '50%',
@@ -74,107 +44,78 @@ export default function Home() {
           }}
         />
 
-        {/* Dark radial gradient overlay — z-index 1 */}
+        {/* Dark overlay */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(ellipse at center, rgba(0,52,118,0.3) 0%, rgba(0,13,26,0.85) 70%)',
+            background: 'rgba(0,0,0,0.6)',
             zIndex: 1,
             pointerEvents: 'none',
           }}
         />
 
-        {/* Animated blue glow pulse — z-index 1 */}
-        <motion.div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'radial-gradient(ellipse 50% 40% at 50% 50%, rgba(0,52,118,0.25) 0%, transparent 70%)',
-            zIndex: 1,
-            pointerEvents: 'none',
-          }}
-          animate={{ opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        {/* Ford logo */}
+        <div className="relative mb-8" style={{ zIndex: 2 }}>
+          <FordOvalLogo width={200} glow={false} />
+        </div>
 
-        {/* Ford Oval Logo — z-index 2 */}
-        <motion.div
-          className="relative mb-6"
-          style={{ zIndex: 2 }}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-        >
-          <FordOvalLogo width={280} glow={true} />
-        </motion.div>
-
-        {/* Title — z-index 2 */}
-        <motion.h1
-          variants={wordReveal}
-          initial="hidden"
-          animate="visible"
-          className="relative flex gap-3 flex-wrap justify-center font-condensed font-black uppercase text-white text-center mb-4"
+        {/* Title */}
+        <h1
+          className="relative text-white text-center mb-4"
           style={{
-            fontSize: 'clamp(2.5rem, 6vw, 5rem)',
-            letterSpacing: '0.12em',
-            textShadow: '0 0 40px rgba(74,158,255,0.3)',
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 700,
+            fontSize: 'clamp(2.8rem, 5vw, 4rem)',
+            letterSpacing: '-0.02em',
             zIndex: 2,
+            margin: '0 0 16px',
           }}
         >
-          {titleWords.map((word, i) => (
-            <motion.span key={i} variants={wordItem}>{word}</motion.span>
-          ))}
-        </motion.h1>
+          Ford Thailand Metrics
+        </h1>
 
-        {/* Subtitle — z-index 2 */}
-        <motion.p
-          className="relative font-body text-white/50 text-center mb-10"
-          style={{ fontSize: 'clamp(0.9rem, 2vw, 1.1rem)', letterSpacing: '0.08em', zIndex: 2 }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.6 }}
-        >
-          Metrics &amp; File Management Platform
-        </motion.p>
-
-        {/* Divider line — z-index 2 */}
-        <motion.div
-          className="relative w-48 h-px mb-10"
+        {/* Subtitle */}
+        <p
+          className="relative text-center"
           style={{
-            background: 'linear-gradient(90deg, transparent, rgba(74,158,255,0.5), transparent)',
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 300,
+            fontSize: '11px',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.4)',
             zIndex: 2,
+            margin: '0 0 40px',
           }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 1.1, duration: 0.8 }}
-        />
+        >
+          Internal Metrics Platform
+        </p>
 
-        {/* Category Cards — z-index 2, perfectly centered */}
-        <motion.div
-          className="relative w-full px-4"
+        {/* Divider */}
+        <div
+          className="relative"
           style={{
-            zIndex: 2,
+            width: '100%',
             maxWidth: '860px',
-            margin: '0 auto',
+            height: '1px',
+            background: 'rgba(255,255,255,0.1)',
+            zIndex: 2,
+            marginBottom: '36px',
           }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+        />
+
+        {/* Category cards */}
+        <div
+          className="relative w-full px-4"
+          style={{ zIndex: 2, maxWidth: '860px', margin: '0 auto' }}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {SLUGS.map((slug, i) => (
-              <motion.div
-                key={slug}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2 + i * 0.1, duration: 0.5 }}
-              >
-                <CategoryCard slug={slug} fileCount={fileCounts[slug] ?? 0} />
-              </motion.div>
+            {SLUGS.map(slug => (
+              <CategoryCard key={slug} slug={slug} fileCount={fileCounts[slug] ?? 0} />
             ))}
           </div>
-        </motion.div>
+        </div>
 
       </section>
     </div>

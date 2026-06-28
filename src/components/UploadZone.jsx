@@ -93,8 +93,8 @@ export default function UploadZone({ onUpload }) {
         onClick={() => !selectedFile && inputRef.current.click()}
         className="relative rounded-2xl p-8 text-center cursor-pointer transition-all duration-200"
         style={{
-          border: isDragging ? '2px solid #4a9eff' : '2px dashed rgba(255,255,255,0.15)',
-          background: isDragging ? 'rgba(74,158,255,0.06)' : 'rgba(255,255,255,0.02)',
+          border: isDragging ? '1.5px dashed rgba(255,255,255,0.6)' : '1.5px dashed rgba(255,255,255,0.15)',
+          background: isDragging ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)',
           cursor: selectedFile ? 'default' : 'pointer',
           backdropFilter: 'blur(8px)',
         }}
@@ -120,7 +120,7 @@ export default function UploadZone({ onUpload }) {
               <div className="text-4xl opacity-50">📁</div>
               <p className="font-body font-medium text-white/70">
                 Drop your Excel or CSV file here, or{' '}
-                <span style={{ color: '#4a9eff' }}>click to browse</span>
+                <span style={{ color: 'rgba(255,255,255,0.8)' }}>click to browse</span>
               </p>
               <p className="font-body text-sm text-white/30">
                 Supports .csv, .xlsx, .xls · Max 50MB
@@ -172,7 +172,7 @@ export default function UploadZone({ onUpload }) {
                   <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
                     <motion.div
                       className="h-full rounded-full"
-                      style={{ background: 'linear-gradient(90deg, #003476, #4a9eff)' }}
+                      style={{ background: 'rgba(255,255,255,0.6)' }}
                       animate={{ width: `${progress}%` }}
                       transition={{ duration: 0.3 }}
                     />
@@ -199,9 +199,9 @@ export default function UploadZone({ onUpload }) {
                   <button
                     onClick={handleUploadClick}
                     className="px-6 py-2.5 rounded-xl font-body font-semibold text-sm text-white transition-all duration-150"
-                    style={{ background: '#003476', border: '1px solid rgba(74,158,255,0.3)' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = '#4a9eff' }}
-                    onMouseLeave={e => { e.currentTarget.style.background = '#003476' }}
+                    style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.2)' }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)' }}
                   >
                     Upload File
                   </button>
